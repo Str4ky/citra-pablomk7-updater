@@ -6,17 +6,17 @@ import json
 import sys
 import os
 
-#Reset the variable if argument hasn't been set
+#Reset the variable if no argument hasn't been set
 if len(sys.argv) > 1:
-    var = sys.argv[1]
+    argument = sys.argv[1]
 else:
-    var = ""
+    argument = ""
 
 #Set the directory to the user's directory
 user_dir = str(Path.home())
 
 #Set an environment variable based on the folder passed by the user
-if var == "set":
+if argument == "set":
     #If there's a second argument
     if len(sys.argv) > 2:
         folder = sys.argv[2]
@@ -33,7 +33,7 @@ if var == "set":
         print("\nUse: cput set <citra_folder>")
         sys.exit(1)
 #Update Citra to it's latest version
-elif var == "update":
+elif argument == "update":
     #If the json file exist
     if Path(f"{user_dir}/cput.json").exists():
         #If the content of the path value of the json is empty
