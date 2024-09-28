@@ -70,7 +70,7 @@ elif var == "update":
         os.rename(parent / f"citra-windows-msvc-{date}-{name}", citra_dir)
         #Clean up the downloaded zip
         print(f"Cleaning up...")
-        os.system("rm citra.zip")
+        os.remove("citra.zip")
         print(f"Citra has been updated to r{name}")
 else:
     #Show help
