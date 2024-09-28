@@ -17,15 +17,21 @@ directory = str(Path.home())
 
 #Set an environment variable based on the folder passed by the user
 if var == "set":
-    folder = sys.argv[2]
-    data = {
-        "path": folder
-    }
-    with open(f"{directory}/cput.json", "w") as json_file:
-        json.dump(data, json_file)
-        json_file.close()
-    print(f"Citra folder has been set")
-    sys.exit(0)
+    #If there's a second argument
+    if len(sys.argv) > 2:
+        folder = sys.argv[2]
+        data = {
+            "path": folder
+        }
+        with open(f"{directory}/cput.json", "w") as json_file:
+            json.dump(data, json_file)
+            json_file.close()
+        print(f"Citra folder has been set")
+        sys.exit(0)
+    else:
+        print("You did not provide a folder")
+        print("\nUse: cput set <citra_folder>")
+        sys.exit(1)
 #Update Citra to it's latest version
 elif var == "update":
     #If the json file exist
