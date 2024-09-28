@@ -57,24 +57,21 @@ elif var == "update":
         date = date.replace("-", "")
         #Set the download url to what we got from the JSON
         file = "https://github.com/PabloMK7/citra/releases/download/r" + name + "/citra-windows-msvc-" + date + "-" + name + ".zip"
-        print(f"Downloading Citra r{name}...")
+        print(f"Updating Citra to r{name}...\n")
         #Download the file
         os.system(f"curl -L -o citra.zip {file}")
         #Remove Citra's previous version
-        print(f"Removing old Citra version...")
         shutil.rmtree(citra_dir, ignore_errors=True)
         #Extract Citra's newest version
-        print(f"Extracting Citra r{name}...")
         with zipfile.ZipFile("citra.zip", 'r') as zip_ref:
             zip_ref.extractall(parent)
         os.rename(parent / f"citra-windows-msvc-{date}-{name}", citra_dir)
         #Clean up the downloaded zip
-        print(f"Cleaning up...")
         os.remove("citra.zip")
-        print(f"Citra has been updated to r{name}")
+        print(f"\nCitra has been updated to r{name}!")
 else:
     #Show help
     print("Citra MK7's fork updater")
     print("\ncput set <citra_folder>              Set Citra folder")
-    print("cput update                          Update Citra to the latest version")
+    print("cput update                          Update Citra to it's latest version")
     sys.exit(1)
