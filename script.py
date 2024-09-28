@@ -20,14 +20,19 @@ if argument == "set":
     #If there's a second argument
     if len(sys.argv) > 2:
         folder = sys.argv[2]
-        data = {
-            "path": folder
-        }
-        with open(f"{user_dir}/cput.json", "w") as json_file:
-            json.dump(data, json_file)
-            json_file.close()
-        print(f"Citra folder has been set")
-        sys.exit(0)
+        #If the folder exists and citra-qt.exe is in it
+        if Path(folder + "/citra-qt.exe").exists():
+            data = {
+                "path": folder
+            }
+            with open(f"{user_dir}/cput.json", "w") as json_file:
+                json.dump(data, json_file)
+                json_file.close()
+            print(f"Citra folder has been set")
+            sys.exit(0)
+        else:
+            print("The folder you provided isn't one where Citra is installed")
+            sys.exit(1)
     else:
         print("You did not provide a folder")
         print("\nUse: cput set <citra_folder>")
@@ -50,7 +55,7 @@ elif argument == "update":
         sys.exit(1)
     #Get Citra's folder and it's parent
     citra_dir = Path(content["path"])
-    parent = Path(citra_dir).parent
+    parent_dir = Path(citra_dir).parent
     #URL to the PabloMK7 citra fork's repo from Github's api
     url = "https://api.github.com/repos/PabloMK7/citra/releases/latest"
     #Parse the returnd JSON
@@ -70,8 +75,8 @@ elif argument == "update":
         shutil.rmtree(citra_dir, ignore_errors=True)
         #Extract Citra's newest version
         with zipfile.ZipFile("citra.zip", 'r') as zip_ref:
-            zip_ref.extractall(parent)
-        os.rename(parent / f"citra-windows-msvc-{date}-{name}", citra_dir)
+            zip_ref.extractall(parent_dir)
+        os.rename(parent_dir / f"citra-windows-msvc-{date}-{name}", citra_dir)
         #Clean up the downloaded zip
         os.remove("citra.zip")
         print(f"\nCitra has been updated to r{name}!")
