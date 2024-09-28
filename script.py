@@ -13,7 +13,7 @@ else:
     var = ""
 
 #Set the directory to the user's directory
-directory = str(Path.home())
+user_dir = str(Path.home())
 
 #Set an environment variable based on the folder passed by the user
 if var == "set":
@@ -23,7 +23,7 @@ if var == "set":
         data = {
             "path": folder
         }
-        with open(f"{directory}/cput.json", "w") as json_file:
+        with open(f"{user_dir}/cput.json", "w") as json_file:
             json.dump(data, json_file)
             json_file.close()
         print(f"Citra folder has been set")
@@ -35,7 +35,7 @@ if var == "set":
 #Update Citra to it's latest version
 elif var == "update":
     #If the json file exist
-    if Path(f"{directory}/cput.json").exists():
+    if Path(f"{user_dir}/cput.json").exists():
         #If the content of the path value of the json is empty
         with open("cput.json", "r") as json_file:
             content = json.load(json_file)
