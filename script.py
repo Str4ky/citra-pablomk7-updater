@@ -42,7 +42,7 @@ elif argument == "update":
     #If the json file exist
     if Path(f"{user_dir}/cput.json").exists():
         #If the content of the path value of the json is empty
-        with open("cput.json", "r") as json_file:
+        with open(f"{user_dir}/cput.json", "r") as json_file:
             content = json.load(json_file)
             json_file.close()
             if content["path"] == "":
