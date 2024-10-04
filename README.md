@@ -13,4 +13,5 @@ To update Citra<br>
 `cput update`
 
 ## ATTENTION!!!
-### DO NOT SET THE FOLDER IN `C:\Users\<user>\AppData\Roaming\Citra` OR YOU WILL LOSE ANY DATAS AFTER UPDATING
+### DO NOT SET THE FOLDER `C:\Users\<user>\AppData\Roaming\Citra` (or any folder with datas you don't want to lose) OR YOU WILL LOSE ANY DATAS AFTER UPDATING
+Theoretically you cannot as I made it so the program checks if it's a valid Citra folder but don't try to nypass this to put a folder that can erase datas
