@@ -124,10 +124,10 @@ elif argument == "verify":
         content = json.load(json_file)
         citra_dir = Path(content["path"])
         parent_dir = Path(citra_dir).parent
-        version = content["version"]
+        citra_ver = content["version"]
         json_file.close()
         #If the version value is empty
-        if citra_dir == "" and version == "":
+        if citra_dir == "" and citra_ver == "":
             print("No Citra version has been detected")
             sys.exit(1)
         url = "https://api.github.com/repos/PabloMK7/citra/releases/latest"
@@ -138,7 +138,7 @@ elif argument == "verify":
             release_info = json.loads(response.text)
             name = release_info['name'][1:]
             #If the version value is different from the latest version
-            if version != name:
+            if citra_ver != name:
                 #Put the version in the JSON file
                 with open(json_path, "r") as json_file:
                     data = json.load(json_file)
@@ -164,7 +164,7 @@ elif argument == "verify":
                 #Run Citra's executable
                 os.system(f"start {citra_dir}/citra-qt.exe")
                 sys.exit(0)
-            elif version == name:
+            elif citra_ver == name:
                 #Run Citra's executable
                 os.system(f"start {citra_dir}/citra-qt.exe")
                 sys.exit(0) 
@@ -172,7 +172,7 @@ else:
     #Show help
     print("Citra MK7's fork updater")
     print("\ncput set <citra_folder>              Set Citra folder")
-    print("cput shortcut                        Create a shortcut to the verify action in the start menu")
+    print("cput shortcut                        Create a shortcut to the verify function in the start menu")
     print("cput update                          Update Citra to it's latest version")
     print("cput verify                          Verify if Citra is up to date and run it")
     sys.exit(1)
