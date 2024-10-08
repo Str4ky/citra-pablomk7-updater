@@ -9,8 +9,12 @@ To use it you need to use Windows's command prompt<br><br>
 To set Citra's folder<br>
 `cput set <citra folder>`<br>
 `C:\Users\<user>\AppData\Local\Citra\<nightly/canary>` is Citra's default path so set the folder where `citra-qt.exe` is inside<br><br>
+To create a shortcut in the start menu to the script's verify function<br>
+`cput shortcut`<br>
 To update Citra<br>
 `cput update`
+To either launch Citra or update it if it's not up to date<br>
+`cput verify`
 
 ## ATTENTION!!!
 ### DO NOT SET THE FOLDER `C:\Users\<user>\AppData\Roaming\Citra` (or any folder with datas you don't want to lose) OR YOU WILL LOSE ANY DATAS AFTER UPDATING
