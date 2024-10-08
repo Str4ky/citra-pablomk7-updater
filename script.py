@@ -62,7 +62,7 @@ elif argument == "shortcut":
                 elif content["path"] != "":
                     #Create the icon
                     image = Image.open(Path(content["path"]) / "dist/citra.png")
-                    image.save(user_dir + "/citra.ico", format='ICO')
+                    image.save(user_dir + "/citra.ico", format='ICO', sizes=[(16, 16), (32, 32), (48, 48), (64, 64), (128, 128), (256, 256)])
                     icon_path = user_dir + "/citra.ico"
                     #Create the shortcut
                     os.system(f"powershell.exe -Command \"$s=(New-Object -COM WScript.Shell).CreateShortcut('{start_menu_path}');$s.TargetPath='{exe_file}';$s.Arguments='verify';$s.IconLocation='{icon_path}';$s.Save()\"")
@@ -130,6 +130,8 @@ elif argument == "verify":
         if citra_dir == "" and citra_ver == "":
             print("No Citra version has been detected")
             sys.exit(1)
+        #Check for updates
+        print(f"Checking for updates...\n")
         url = "https://api.github.com/repos/PabloMK7/citra/releases/latest"
         #Parse the returnd JSON
         response = requests.get(url)
@@ -162,10 +164,12 @@ elif argument == "verify":
                 #Clean up the downloaded zip
                 os.remove("citra.zip")
                 #Run Citra's executable
+                print("Launching Citra...\n")
                 os.system(f"start {citra_dir}/citra-qt.exe")
                 sys.exit(0)
             elif citra_ver == name:
                 #Run Citra's executable
+                print("Launching Citra...\n")
                 os.system(f"start {citra_dir}/citra-qt.exe")
                 sys.exit(0) 
 else:
