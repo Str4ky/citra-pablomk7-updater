@@ -50,6 +50,7 @@ if not os.path.exists(json_path):
 if argument == "set":
     # If there's a second argument
     if len(sys.argv) > 2:
+        #Get the argument
         folder = sys.argv[2]
         # If the folder exists and citra-qt.exe is in it
         if Path(folder + "/citra-qt.exe").exists():
@@ -71,6 +72,7 @@ if argument == "set":
 elif argument == "shortcut":
     # If there's a second argument
     if len(sys.argv) > 2:
+        #Get the argument
         type = sys.argv[2]
         if getattr(sys, 'frozen', False):
             exe_file = sys.executable
