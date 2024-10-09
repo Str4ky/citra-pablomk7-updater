@@ -69,10 +69,20 @@ if argument == "set":
         sys.exit(1)
 #Create a shortcut to the verify action on the start menu
 elif argument == "shortcut":
+    # If there's a second argument
+    if len(sys.argv) > 2:
+        type = sys.argv[2]
         if getattr(sys, 'frozen', False):
             exe_file = sys.executable
             #Set shortcut attributes
-            start_menu_path = Path(os.environ['APPDATA']) / 'Microsoft' / 'Windows' / 'Start Menu' / 'Programs' / 'Citra (PabloMK7 fork).lnk'
+            if type == "desktop":
+                shortcut_path = Path(os.environ['USERPROFILE']) / 'Desktop' / 'Citra (PabloMK7 fork).lnk'
+            elif type == "startmenu":
+                shortcut_path = Path(os.environ['APPDATA']) / 'Microsoft' / 'Windows' / 'Start Menu' / 'Programs' / 'Citra (PabloMK7 fork).lnk'
+            else:
+                print("You did not provide a shortcut type")
+                print("\nUse: cput shortcut desktop/startmenu")
+                sys.exit(1)
             with open(json_path, "r") as json_file:
                 data = json.load(json_file)
                 if "path" in data:
@@ -87,7 +97,7 @@ elif argument == "shortcut":
                         image.save(user_dir + "/citra.ico", format='ICO', sizes=[(64, 64), (128, 128), (256, 256)])
                         icon_path = user_dir + "/citra.ico"
                         #Create the shortcut
-                        os.system(f"powershell.exe -Command \"$s=(New-Object -COM WScript.Shell).CreateShortcut('{start_menu_path}');$s.TargetPath='{exe_file}';$s.Arguments='verify';$s.IconLocation='{icon_path}';$s.Save()\"")
+                        os.system(f"powershell.exe -Command \"$s=(New-Object -COM WScript.Shell).CreateShortcut('{shortcut_path}');$s.TargetPath='{exe_file}';$s.Arguments='verify';$s.IconLocation='{icon_path}';$s.Save()\"")
                         print("Shortcut has been created")
                         sys.exit(0)
                 else:
@@ -95,6 +105,10 @@ elif argument == "shortcut":
                     print("\nUse: cput set <citra_folder>")
                     sys.exit(1)
                 json_file.close()
+    else:
+        print("You did not provide a shortcut type")
+        print("\nUse: cput shortcut desktop/startmenu")
+        sys.exit(1)
 #Update Citra to it's latest version
 elif argument == "update":
     with open(json_path, "r") as json_file:
@@ -181,7 +195,7 @@ else:
     #Show help
     print("Citra MK7's fork updater")
     print("\ncput set <citra_folder>              Set Citra folder")
-    print("cput shortcut                        Create a shortcut to the verify function in the start menu")
+    print("cput shortcut desktop/startmenu      Create a shortcut to the verify function in the start menu")
     print("cput update                          Update Citra to it's latest version")
     print("cput verify                          Verify if Citra is up to date and run it")
     sys.exit(1)
