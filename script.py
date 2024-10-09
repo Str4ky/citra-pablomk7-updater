@@ -158,7 +158,7 @@ elif argument == "verify":
             release_info = json.loads(response.text)
             name = release_info['name'][1:]
             #If the version value is different from the latest version
-            if citra_ver != name and citra_ver != "":
+            if citra_ver != name:
                 #Put the version in the JSON file
                 with open(json_path, "r") as json_file:
                     data = json.load(json_file)
@@ -172,7 +172,7 @@ elif argument == "verify":
                 print("\nLaunching Citra...\n")
                 os.system(f"start {citra_dir}/citra-qt.exe")
                 sys.exit(0)
-            elif citra_ver == name or citra_ver == "":
+            elif citra_ver == name:
                 #Run Citra's executable
                 print("Launching Citra...\n")
                 os.system(f"start {citra_dir}/citra-qt.exe")
