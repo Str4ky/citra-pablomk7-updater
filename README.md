@@ -10,7 +10,7 @@ To set Citra's folder<br>
 `cput set <citra folder>`<br>
 `C:\Users\<user>\AppData\Local\Citra\<nightly/canary>` is Citra's default path so set the folder where `citra-qt.exe` is inside<br><br>
 To create a shortcut in the start menu to the script's verify function<br>
-`cput shortcut`<br>
+`cput shortcut desktop/startmenu`<br>
 To update Citra<br>
 `cput update`
 To either launch Citra or update it if it's not up to date<br>
