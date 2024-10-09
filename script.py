@@ -7,6 +7,27 @@ import json
 import sys
 import os
 
+
+def update():
+    #Get the version value from the JSON file
+    date = release_info['published_at'][:10]
+    date = date.replace("-", "")
+    #Set the download url to what we got from the JSON
+    file = "https://github.com/PabloMK7/citra/releases/download/r" + name + "/citra-windows-msvc-" + date + "-" + name + ".zip"
+    print(f"Updating Citra to r{name}...\n")
+    #Download the file
+    os.system(f"curl -L -o citra.zip {file}")
+    #Remove Citra's previous version
+    shutil.rmtree(citra_dir, ignore_errors=True)
+    #Extract Citra's newest version
+    with zipfile.ZipFile("citra.zip", 'r') as zip_ref:
+        zip_ref.extractall(parent_dir)
+    os.rename(parent_dir / f"citra-windows-msvc-{date}-{name}", citra_dir)
+    #Clean up the downloaded zip
+    os.remove("citra.zip")
+    print(f"\nCitra has been updated to r{name}!")
+
+
 #Reset the variable if no argument hasn't been set
 if len(sys.argv) > 1:
     argument = sys.argv[1]
@@ -53,83 +74,80 @@ elif argument == "shortcut":
             #Set shortcut attributes
             start_menu_path = Path(os.environ['APPDATA']) / 'Microsoft' / 'Windows' / 'Start Menu' / 'Programs' / 'Citra (PabloMK7 fork).lnk'
             with open(json_path, "r") as json_file:
-                content = json.load(json_file)
-                json_file.close()
-                if content["path"] == "":
+                data = json.load(json_file)
+                if "path" in data:
+                    if  data["path"] == "":
+                        print("Citra folder is not set not set")
+                        print("\nUse: cput set <citra_folder>")
+                        sys.exit(1)
+                    elif data["path"] != "":
+                        #Create the icon
+                        image = Image.open(Path(data["path"]) / "dist/citra.png")
+                        image = image.convert('RGBA')
+                        image.save(user_dir + "/citra.ico", format='ICO', sizes=[(64, 64), (128, 128), (256, 256)])
+                        icon_path = user_dir + "/citra.ico"
+                        #Create the shortcut
+                        os.system(f"powershell.exe -Command \"$s=(New-Object -COM WScript.Shell).CreateShortcut('{start_menu_path}');$s.TargetPath='{exe_file}';$s.Arguments='verify';$s.IconLocation='{icon_path}';$s.Save()\"")
+                        print("Shortcut has been created")
+                        sys.exit(0)
+                else:
                     print("Citra folder is not set not set")
                     print("\nUse: cput set <citra_folder>")
                     sys.exit(1)
-                elif content["path"] != "":
-                    #Create the icon
-                    image = Image.open(Path(content["path"]) / "dist/citra.png")
-                    image.save(user_dir + "/citra.ico", format='ICO', sizes=[(16, 16), (32, 32), (48, 48), (64, 64), (128, 128), (256, 256)])
-                    icon_path = user_dir + "/citra.ico"
-                    #Create the shortcut
-                    os.system(f"powershell.exe -Command \"$s=(New-Object -COM WScript.Shell).CreateShortcut('{start_menu_path}');$s.TargetPath='{exe_file}';$s.Arguments='verify';$s.IconLocation='{icon_path}';$s.Save()\"")
-                    print("Shortcut has been created")
-                    sys.exit(0)
+                json_file.close()
 #Update Citra to it's latest version
 elif argument == "update":
-    #If the json file exist
-    if Path(json_path).exists():
-        #If the content of the path value of the json is empty
-        with open(json_path, "r") as json_file:
-            content = json.load(json_file)
-            json_file.close()
-            if content["path"] == "":
+    with open(json_path, "r") as json_file:
+        #Load the JSON file
+        data = json.load(json_file)
+        #If the path value is empty
+        if "path" in data:
+            if  data["path"] == "":
                 print("Citra folder is not set not set")
                 print("\nUse: cput set <citra_folder>")
                 sys.exit(1)
-    else:
-        print("Citra folder is not set not set")
-        print("\nUse: cput set <citra_folder>")
-        sys.exit(1)
-    #Get Citra's folder and it's parent
-    citra_dir = Path(content["path"])
-    parent_dir = Path(citra_dir).parent
-    #URL to the PabloMK7 citra fork's repo from Github's api
-    url = "https://api.github.com/repos/PabloMK7/citra/releases/latest"
-    #Parse the returnd JSON
-    response = requests.get(url)
-    if response.status_code == 200:
-        #Get the infos from the JSON
-        release_info = json.loads(response.text)
-        name = release_info['name'][1:]
-        #Put the version in the JSON file
-        with open(json_path, "r") as json_file:
-            data = json.load(json_file)
+        else:
+            print("Citra folder is not set not set")
+            print("\nUse: cput set <citra_folder>")
+            sys.exit(1)
+        #Get Citra's folder and it's parent
+        citra_dir = Path(data["path"])
+        parent_dir = Path(citra_dir).parent
+        #URL to the PabloMK7 citra fork's repo from Github's api
+        url = "https://api.github.com/repos/PabloMK7/citra/releases/latest"
+        #Parse the returnd JSON
+        response = requests.get(url)
+        if response.status_code == 200:
+            #Get the infos from the JSON
+            release_info = json.loads(response.text)
+            name = release_info['name'][1:]
+            #Put the version in the JSON file
             data["version"] = f"{name}"
             with open(json_path, "w") as json_file:
                 json.dump(data, json_file, indent=4)
-            json_file.close()
-        date = release_info['published_at'][:10]
-        date = date.replace("-", "")
-        #Set the download url to what we got from the JSON
-        file = "https://github.com/PabloMK7/citra/releases/download/r" + name + "/citra-windows-msvc-" + date + "-" + name + ".zip"
-        print(f"Updating Citra to r{name}...\n")
-        #Download the file
-        os.system(f"curl -L -o citra.zip {file}")
-        #Remove Citra's previous version
-        shutil.rmtree(citra_dir, ignore_errors=True)
-        #Extract Citra's newest version
-        with zipfile.ZipFile("citra.zip", 'r') as zip_ref:
-            zip_ref.extractall(parent_dir)
-        os.rename(parent_dir / f"citra-windows-msvc-{date}-{name}", citra_dir)
-        #Clean up the downloaded zip
-        os.remove("citra.zip")
-        print(f"\nCitra has been updated to r{name}!")
+            #Update Citra
+            update()
+        json_file.close()
+        sys.exit(0)
 elif argument == "verify":
     #read the version value from the json file
     with open(json_path, "r") as json_file:
-        content = json.load(json_file)
-        citra_dir = Path(content["path"])
-        parent_dir = Path(citra_dir).parent
-        citra_ver = content["version"]
-        json_file.close()
-        #If the version value is empty
-        if citra_dir == "" and citra_ver == "":
-            print("No Citra version has been detected")
+        #Load the JSON file
+        data = json.load(json_file)
+        #If the path value is empty
+        if "path" in data:
+            if  data["path"] == "":
+                print("Citra folder is not set not set")
+                print("\nUse: cput set <citra_folder>")
+                sys.exit(1)
+        else:
+            print("Citra folder is not set not set")
+            print("\nUse: cput set <citra_folder>")
             sys.exit(1)
+        citra_dir = Path(data["path"])
+        parent_dir = Path(citra_dir).parent
+        citra_ver = data["version"]
+        json_file.close()
         #Check for updates
         print(f"Checking for updates...\n")
         url = "https://api.github.com/repos/PabloMK7/citra/releases/latest"
@@ -140,7 +158,7 @@ elif argument == "verify":
             release_info = json.loads(response.text)
             name = release_info['name'][1:]
             #If the version value is different from the latest version
-            if citra_ver != name:
+            if citra_ver != name and citra_ver != "":
                 #Put the version in the JSON file
                 with open(json_path, "r") as json_file:
                     data = json.load(json_file)
@@ -148,26 +166,13 @@ elif argument == "verify":
                     with open(json_path, "w") as json_file:
                         json.dump(data, json_file, indent=4)
                     json_file.close()
-                date = release_info['published_at'][:10]
-                date = date.replace("-", "")
-                #Set the download url to what we got from the JSON
-                file = "https://github.com/PabloMK7/citra/releases/download/r" + name + "/citra-windows-msvc-" + date + "-" + name + ".zip"
-                print(f"Updating Citra to r{name}...\n")
-                #Download the file
-                os.system(f"curl -L -o citra.zip {file}")
-                #Remove Citra's previous version
-                shutil.rmtree(citra_dir, ignore_errors=True)
-                #Extract Citra's newest version
-                with zipfile.ZipFile("citra.zip", 'r') as zip_ref:
-                    zip_ref.extractall(parent_dir)
-                os.rename(parent_dir / f"citra-windows-msvc-{date}-{name}", citra_dir)
-                #Clean up the downloaded zip
-                os.remove("citra.zip")
+                #Update Citra
+                update()
                 #Run Citra's executable
-                print("Launching Citra...\n")
+                print("\nLaunching Citra...\n")
                 os.system(f"start {citra_dir}/citra-qt.exe")
                 sys.exit(0)
-            elif citra_ver == name:
+            elif citra_ver == name or citra_ver == "":
                 #Run Citra's executable
                 print("Launching Citra...\n")
                 os.system(f"start {citra_dir}/citra-qt.exe")
