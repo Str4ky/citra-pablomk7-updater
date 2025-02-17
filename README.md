@@ -18,4 +18,4 @@ To either launch Citra or update it if it's not up to date<br>
 
 ## ATTENTION!!!
 ### DO NOT SET THE FOLDER `C:\Users\<user>\AppData\Roaming\Citra` (or any folder with datas you don't want to lose) OR YOU WILL LOSE ANY DATAS AFTER UPDATING
-Theoretically you cannot as I made it so the program checks if it's a valid Citra folder but don't try to nypass this to put a folder that can erase datas
+Theoretically you cannot as I made it so the program checks if it's a valid Citra folder but don't try to bypass this to put a folder that can erase datas
