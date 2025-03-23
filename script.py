@@ -89,7 +89,7 @@ elif argument == "shortcut":
                 data = json.load(json_file)
                 if "path" in data:
                     if  data["path"] == "":
-                        print("Citra folder is not set not set")
+                        print("Citra folder is not set")
                         print("\nUse: cput set <citra_folder>")
                         sys.exit(1)
                     elif data["path"] != "":
@@ -103,7 +103,7 @@ elif argument == "shortcut":
                         print("Shortcut has been created")
                         sys.exit(0)
                 else:
-                    print("Citra folder is not set not set")
+                    print("Citra folder is not set")
                     print("\nUse: cput set <citra_folder>")
                     sys.exit(1)
                 json_file.close()
@@ -119,12 +119,16 @@ elif argument == "update":
         #If the path value is empty
         if "path" in data:
             if  data["path"] == "":
-                print("Citra folder is not set not set")
+                print("Citra folder is not set")
                 print("\nUse: cput set <citra_folder>")
                 sys.exit(1)
+        elif "version" in data:
+            print("Citra version is not set")
+            print("\nUse: cput update")
+            sys.exit
         else:
-            print("Citra folder is not set not set")
-            print("\nUse: cput set <citra_folder>")
+            print("Citra folder is not set or version not found")
+            print("\nUse: cput set <citra_folder> then cput update")
             sys.exit(1)
         #Get Citra's folder and it's parent
         citra_dir = Path(data["path"])
@@ -153,11 +157,11 @@ elif argument == "verify":
         #If the path value is empty
         if "path" in data:
             if  data["path"] == "":
-                print("Citra folder is not set not set")
+                print("Citra folder is not set")
                 print("\nUse: cput set <citra_folder>")
                 sys.exit(1)
         else:
-            print("Citra folder is not set not set")
+            print("Citra folder is not set")
             print("\nUse: cput set <citra_folder>")
             sys.exit(1)
         citra_dir = Path(data["path"])
