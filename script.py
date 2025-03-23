@@ -124,13 +124,19 @@ elif argument == "update":
                 print("Citra folder is not set")
                 print("\nUse: cput set <citra_folder>")
                 sys.exit(1)
-        elif "version" in data:
-            print("Citra version is not set")
-            print("\nUse: cput update")
-            sys.exit
         else:
-            print("Citra folder is not set or version not found")
-            print("\nUse: cput set <citra_folder> then cput update")
+            print("Citra folder is not set")
+            print("\nUse: cput set <citra_folder>")
+            sys.exit(1)
+
+        if "version" in data:
+            if  data["path"] == "":
+                print("Citra version is not set")
+                print("\nUse: cput update")
+                sys.exit(1)
+        else:
+            print("Citra version not found")
+            print("\nUse: cput update")
             sys.exit(1)
         #Get Citra's folder and it's parent
         citra_dir = Path(data["path"])
