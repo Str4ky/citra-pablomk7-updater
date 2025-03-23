@@ -94,10 +94,12 @@ elif argument == "shortcut":
                         sys.exit(1)
                     elif data["path"] != "":
                         #Create the icon
-                        image = Image.open(Path(data["path"]) / "dist/citra.png")
-                        image = image.convert('RGBA')
-                        image.save(user_dir + "/citra.ico", format='ICO', sizes=[(64, 64), (128, 128), (256, 256)])
                         icon_path = user_dir + "/citra.ico"
+                        #Check if file already exists
+                        if not Path(icon_path).exists():
+                            image = Image.open(Path(data["path"]) / "dist/citra.png")
+                            image = image.convert('RGBA')
+                            image.save(user_dir + "/citra.ico", format='ICO', sizes=[(64, 64), (128, 128), (256, 256)])
                         #Create the shortcut
                         os.system(f"powershell.exe -Command \"$s=(New-Object -COM WScript.Shell).CreateShortcut('{shortcut_path}');$s.TargetPath='{exe_file}';$s.Arguments='verify';$s.IconLocation='{icon_path}';$s.Save()\"")
                         print("Shortcut has been created")
